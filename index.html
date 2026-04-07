@@ -527,10 +527,141 @@
                 </tr>
               </tbody>
             </table>
+
           </td>
         </tr>
       </tbody>
     </table>
+    <div class="media-lightbox" id="media-lightbox" aria-hidden="true">
+      <div class="media-lightbox-dialog" role="dialog" aria-modal="true" aria-label="Expanded media viewer">
+        <button type="button" class="media-lightbox-close" id="media-lightbox-close" aria-label="Close media viewer">&times;</button>
+        <div class="media-lightbox-stage" id="media-lightbox-stage"></div>
+        <p class="media-lightbox-caption" id="media-lightbox-caption"></p>
+      </div>
+    </div>
+    <script>
+      (function () {
+        var lightbox = document.getElementById("media-lightbox");
+        var closeButton = document.getElementById("media-lightbox-close");
+        var stage = document.getElementById("media-lightbox-stage");
+        var caption = document.getElementById("media-lightbox-caption");
+        var lastFocused = null;
+
+        function getMediaSource(thumb) {
+          if (thumb.dataset.mediaSrc) {
+            return thumb.dataset.mediaSrc;
+          }
+
+          var image = thumb.querySelector("img");
+          if (image) {
+            return image.currentSrc || image.getAttribute("src");
+          }
+
+          var video = thumb.querySelector("video");
+          if (video) {
+            return video.currentSrc || video.getAttribute("src");
+          }
+
+          var source = thumb.querySelector("video source");
+          return source ? source.getAttribute("src") : "";
+        }
+
+        function getMediaType(thumb) {
+          if (thumb.dataset.mediaType) {
+            return thumb.dataset.mediaType;
+          }
+
+          return thumb.querySelector("video") || thumb.querySelector("video source") ? "video" : "image";
+        }
+
+        function getCaption(thumb) {
+          var title = thumb.closest("tr").querySelector(".papertitle");
+          return title ? title.textContent.trim() : "";
+        }
+
+        function clearStage() {
+          while (stage.firstChild) {
+            stage.removeChild(stage.firstChild);
+          }
+        }
+
+        function closeLightbox() {
+          clearStage();
+          lightbox.classList.remove("is-open");
+          lightbox.setAttribute("aria-hidden", "true");
+          document.body.style.overflow = "";
+          if (lastFocused) {
+            lastFocused.focus();
+            lastFocused = null;
+          }
+        }
+
+        function openLightbox(thumb) {
+          var mediaType = getMediaType(thumb);
+          var mediaSrc = getMediaSource(thumb);
+          var media;
+
+          if (!mediaSrc) {
+            return;
+          }
+
+          clearStage();
+
+          if (mediaType === "video") {
+            media = document.createElement("video");
+            media.src = mediaSrc;
+            media.controls = true;
+            media.autoplay = true;
+            media.loop = true;
+            media.playsInline = true;
+          } else {
+            media = document.createElement("img");
+            media.src = mediaSrc;
+            media.alt = getCaption(thumb);
+          }
+
+          stage.appendChild(media);
+          caption.textContent = getCaption(thumb);
+          lastFocused = thumb;
+          lightbox.classList.add("is-open");
+          lightbox.setAttribute("aria-hidden", "false");
+          document.body.style.overflow = "hidden";
+          closeButton.focus();
+        }
+
+        document.querySelectorAll(".paper-thumb").forEach(function (thumb) {
+          var title = getCaption(thumb) || "Open media";
+          thumb.setAttribute("role", "button");
+          thumb.setAttribute("tabindex", "0");
+          thumb.setAttribute("aria-label", "Open " + title);
+
+          thumb.addEventListener("click", function () {
+            openLightbox(thumb);
+          });
+
+          thumb.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              openLightbox(thumb);
+            }
+          });
+        });
+
+        lightbox.addEventListener("click", function (event) {
+          if (event.target === lightbox) {
+            closeLightbox();
+          }
+        });
+
+        closeButton.addEventListener("click", closeLightbox);
+
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape" && lightbox.classList.contains("is-open")) {
+            closeLightbox();
+          }
+        });
+      })();
+    </script>
     <!-- Cloudflare Web Analytics -->
     <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f4c9bb79979b45b9837bfcde020d9dfa"}'></script>
     <!-- End Cloudflare Web Analytics -->
