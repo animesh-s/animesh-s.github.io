@@ -186,8 +186,24 @@ h2 {
   vertical-align: middle;
 }
 
+.section-gap-top {
+  margin-top: 28px;
+}
+
 .list-shell {
   border-spacing: 0 12px;
+}
+
+.gallery-shell,
+.gallery-shell tbody {
+  display: block;
+  width: 100%;
+}
+
+.gallery-shell tbody {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
 }
 
 .entry-row {
@@ -197,6 +213,15 @@ h2 {
 
 .entry-row.spotlight {
   background: var(--spotlight);
+}
+
+.gallery-shell .entry-row {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(17, 59, 120, 0.08);
 }
 
 .thumb-cell {
@@ -213,6 +238,44 @@ h2 {
 
 .entry-copy p:last-child {
   margin-bottom: 0;
+}
+
+.gallery-shell .thumb-cell,
+.gallery-shell .entry-copy {
+  display: block;
+  width: auto;
+  padding: 0;
+}
+
+.gallery-shell .paper-thumb {
+  width: 100%;
+  height: 84px;
+  border: 0;
+  border-radius: 0;
+  background: #eef3fb;
+}
+
+.gallery-shell .project-thumb {
+  height: 84px;
+}
+
+.gallery-shell .entry-copy {
+  padding: 8px 10px 10px;
+}
+
+.gallery-shell .entry-copy em {
+  color: var(--muted);
+}
+
+.gallery-shell .papertitle {
+  font-size: 14px;
+}
+
+.gallery-shell .entry-copy,
+.gallery-shell .entry-copy p,
+.gallery-shell .entry-copy a {
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .paper-thumb {
@@ -301,14 +364,33 @@ h2 {
   vertical-align: middle;
 }
 
-.contact-copy {
-  padding-bottom: 20px;
-}
-
 .footer-shell td {
   padding: 26px 18px 42px;
   color: var(--muted);
   text-align: center;
+}
+
+.visitor-map {
+  width: 340px;
+  height: 216px;
+  margin: 0 auto 10px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+.visitor-map script,
+.visitor-map iframe,
+.visitor-map img,
+.visitor-map div,
+.visitor-map canvas {
+  transform: scale(1);
+  transform-origin: center top;
+}
+
+.visitor-map > * {
+  max-width: 100%;
 }
 
 .media-lightbox {
@@ -468,6 +550,28 @@ h2 {
     height: 70px;
   }
 
+  .gallery-shell tbody {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .gallery-shell .thumb-cell {
+    padding: 0;
+  }
+
+  .gallery-shell .paper-thumb {
+    height: 84px;
+    flex-direction: column;
+  }
+
+  .gallery-shell .project-thumb {
+    height: 84px;
+  }
+
+  .gallery-shell .entry-copy {
+    padding: 10px 12px 12px;
+  }
+
   .media-lightbox {
     padding: 16px;
   }
@@ -476,6 +580,11 @@ h2 {
     width: 100%;
     padding: 14px;
     border-radius: 18px;
+  }
+
+  .visitor-map {
+    width: 300px;
+    height: 192px;
   }
 
   .timeline-shell td {
